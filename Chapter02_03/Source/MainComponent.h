@@ -10,21 +10,14 @@
 #define MAINCOMPONENT_H_INCLUDED
 
 #include "../JuceLibraryCode/JuceHeader.h"
-
+#include "NumLabel.h"
 
 //==============================================================================
 /*
  This component lives inside our window, and this is where you should put all
  your controls and content.
  */
-class NumericalLabel : public Label
-{
-public:
-    void editorShown(TextEditor* editor)
-    {
-        editor->setInputRestrictions(0,"-0123456789.");
-    }
-};
+
 class MainContentComponent   : public Component,
 public Button::Listener,
 public Slider::Listener,
