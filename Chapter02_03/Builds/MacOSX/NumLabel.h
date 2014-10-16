@@ -12,10 +12,7 @@
 class NumericalLabel : public Label
 {
 public:
-    void editorShown(TextEditor* editor)
-    {
-        editor->setInputRestrictions(0,"-0123456789.");
-    }
+    void editorShown(TextEditor* editor);
 };
 
 

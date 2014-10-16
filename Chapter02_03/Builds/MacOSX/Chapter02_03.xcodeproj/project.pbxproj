@@ -25,6 +25,8 @@
 		83E6D065E0B2F0986BC8813E /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 71FD674651BE5EB29414A758 /* IOKit.framework */; };
 		8798425762F2E63BFDEB8667 /* juce_core.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1D62CABEB4585F197E3414AA /* juce_core.mm */; };
 		8DB50088503F661EF49D034C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34C22D4930D0E16546F8AD20 /* WebKit.framework */; };
+		919F214119EF08E70096717A /* NumLabel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 919F214019EF08E70096717A /* NumLabel.cpp */; };
+		919F214419EF0F5F0096717A /* MainWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 919F214219EF0F5F0096717A /* MainWindow.cpp */; };
 		91CF5F9707C4D20280D33A54 /* juce_data_structures.mm in Sources */ = {isa = PBXBuildFile; fileRef = 722C3A9E2D6583525B2C9B8C /* juce_data_structures.mm */; };
 		98B1EDC3743BDC24A18A60B6 /* juce_gui_extra.mm in Sources */ = {isa = PBXBuildFile; fileRef = DE77EDDDABF2369885A6ACC6 /* juce_gui_extra.mm */; };
 		9A00C85CB4F6D22D33586C13 /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01AE7AC04A398282F5884859 /* CoreMIDI.framework */; };
@@ -516,6 +518,9 @@
 		903D2EF0F002B5DEE6688394 /* juce_win32_FileChooser.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = juce_win32_FileChooser.cpp; path = ../../JuceLibraryCode/modules/juce_gui_basics/native/juce_win32_FileChooser.cpp; sourceTree = SOURCE_ROOT; };
 		90E560D50AF901FA07A19DE0 /* juce_MACAddress.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = juce_MACAddress.h; path = ../../JuceLibraryCode/modules/juce_core/network/juce_MACAddress.h; sourceTree = SOURCE_ROOT; };
 		919F213F19EF07620096717A /* NumLabel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NumLabel.h; sourceTree = "<group>"; };
+		919F214019EF08E70096717A /* NumLabel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NumLabel.cpp; sourceTree = "<group>"; };
+		919F214219EF0F5F0096717A /* MainWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MainWindow.cpp; sourceTree = "<group>"; };
+		919F214319EF0F5F0096717A /* MainWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainWindow.h; sourceTree = "<group>"; };
 		91EB741C709EFDD8029B2560 /* juce_CachedComponentImage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = juce_CachedComponentImage.h; path = ../../JuceLibraryCode/modules/juce_gui_basics/components/juce_CachedComponentImage.h; sourceTree = SOURCE_ROOT; };
 		92D7D750E8BA0FB161776E57 /* juce_TableListBox.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = juce_TableListBox.cpp; path = ../../JuceLibraryCode/modules/juce_gui_basics/widgets/juce_TableListBox.cpp; sourceTree = SOURCE_ROOT; };
 		937CA90BEB2A9F4F8AAD7AC9 /* juce_HighResolutionTimer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = juce_HighResolutionTimer.h; path = ../../JuceLibraryCode/modules/juce_core/threads/juce_HighResolutionTimer.h; sourceTree = SOURCE_ROOT; };
@@ -2458,7 +2463,10 @@
 				A5D3F99998ED3C4AE0D0009C /* MainComponent.cpp */,
 				6FCA6C061F199922BD34B3C7 /* MainComponent.h */,
 				919F213F19EF07620096717A /* NumLabel.h */,
+				919F214019EF08E70096717A /* NumLabel.cpp */,
 				A7D855BE898CBB42F15D7093 /* Main.cpp */,
+				919F214219EF0F5F0096717A /* MainWindow.cpp */,
+				919F214319EF0F5F0096717A /* MainWindow.h */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -2690,6 +2698,8 @@
 				F83837D1B244FD3534E55233 /* juce_graphics.mm in Sources */,
 				4433E77DAAD39B2A39907FEF /* juce_gui_basics.mm in Sources */,
 				98B1EDC3743BDC24A18A60B6 /* juce_gui_extra.mm in Sources */,
+				919F214119EF08E70096717A /* NumLabel.cpp in Sources */,
+				919F214419EF0F5F0096717A /* MainWindow.cpp in Sources */,
 				A2B152273175DBE271B7C296 /* juce_opengl.mm in Sources */,
 				35EC8CC4CC7E05E22409AC75 /* juce_video.mm in Sources */,
 			);
