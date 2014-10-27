@@ -13,7 +13,7 @@ MainContentComponent::MainContentComponent()
 :	 readFileButton("Read Image File..."),
 	 writeFileButton("Write Image File...")
 {
-	 brightnessSlider.setRange(-10.0, 10.0);
+	 brightnessSlider.setRange(0.0, 10.0);
 	 addAndMakeVisible(&readFileButton);
 	 addAndMakeVisible(&writeFileButton);
 	 addAndMakeVisible(&imageComponent);
@@ -68,20 +68,18 @@ void MainContentComponent::sliderValueChanged(Slider* slider)
 	 if (&brightnessSlider == slider) {
 		  if (origImage.isValid() && procImage.isValid()) {
 				const float amount = (float)brightnessSlider.getValue();
-				Logger* log = Logger::getCurrentLogger();
-				log->writeToLog(String(amount));
+				float pixchange;
 				if (amount == 0.f) {
 					 procImage = origImage.createCopy();
+					 imageComponent.setImage(procImage);
 				} else {
+					 pixchange = (amount>0)?amount:(-amount);
 					 for (int v=0; v<origImage.getHeight(); ++v) {
 						  for (int h=0; h<origImage.getWidth(); ++h) {
+								Logger* log = Logger::getCurrentLogger();
+								log->writeToLog(String(amount));
 								Colour col = origImage.getPixelAt(h, v);
-								
-								if (amount>0.f) {
-									 procImage.setPixelAt(h, v, col.brighter(amount));
-								} else if (amount<0.f) {
-									 procImage.setPixelAt(h, v, col.darker(-amount));
-								}
+								procImage.setPixelAt(h, v, col.brighter(amount));
 						  }
 					 }
 				}

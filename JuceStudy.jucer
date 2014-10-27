@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<JUCERPROJECT id="hFfjcQ" name="Lipsdrum" projectType="guiapp" version="1.0.0"
+              bundleIdentifier="com.yourcompany.Lipsdrum" includeBinaryInAppConfig="1"
+              jucerVersion="3.1.0">
+  <MAINGROUP id="GnkTqA" name="Lipsdrum">
+    <GROUP id="{9C6F5EB7-BE88-0684-B6AB-33DB86999B6C}" name="Source">
+      <FILE id="i5IF56" name="EntryForm.cpp" compile="1" resource="0" file="EntryForm.cpp"/>
+      <FILE id="VB6INv" name="EntryForm.h" compile="0" resource="0" file="EntryForm.h"/>
+      <FILE id="yLBsUG" name="EmbeddedImage.cpp" compile="1" resource="0"
+            file="EmbeddedImage.cpp"/>
+      <FILE id="uFv4ef" name="EmbeddedImage.h" compile="0" resource="0" file="EmbeddedImage.h"/>
+      <FILE id="ZXXqKz" name="MainComponent.cpp" compile="1" resource="0"
+            file="Source/MainComponent.cpp"/>
+      <FILE id="rb3U3E" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
+      <FILE id="EXF6DK" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
+    </GROUP>
+  </MAINGROUP>
+  <EXPORTFORMATS>
+    <XCODE_MAC targetFolder="Builds/MacOSX">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" osxSDK="default" osxCompatibility="default" osxArchitecture="default"
+                       isDebug="1" optimisation="1" targetName="Lipsdrum"/>
+        <CONFIGURATION name="Release" osxSDK="default" osxCompatibility="default" osxArchitecture="default"
+                       isDebug="0" optimisation="2" targetName="Lipsdrum"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_audio_basics" path="../../../Downloads/juce-code-b45a05d4f633c546424ca854f6d2e0daf21daa74/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../../Downloads/juce-code-b45a05d4f633c546424ca854f6d2e0daf21daa74/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../../Downloads/juce-code-b45a05d4f633c546424ca854f6d2e0daf21daa74/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../../Downloads/juce-code-b45a05d4f633c546424ca854f6d2e0daf21daa74/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../../../Downloads/juce-code-b45a05d4f633c546424ca854f6d2e0daf21daa74/modules"/>
+        <MODULEPATH id="juce_core" path="../../../Downloads/juce-code-b45a05d4f633c546424ca854f6d2e0daf21daa74/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../../Downloads/juce-code-b45a05d4f633c546424ca854f6d2e0daf21daa74/modules"/>
+        <MODULEPATH id="juce_events" path="../../../Downloads/juce-code-b45a05d4f633c546424ca854f6d2e0daf21daa74/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../../Downloads/juce-code-b45a05d4f633c546424ca854f6d2e0daf21daa74/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../../Downloads/juce-code-b45a05d4f633c546424ca854f6d2e0daf21daa74/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../../Downloads/juce-code-b45a05d4f633c546424ca854f6d2e0daf21daa74/modules"/>
+        <MODULEPATH id="juce_opengl" path="../../../Downloads/juce-code-b45a05d4f633c546424ca854f6d2e0daf21daa74/modules"/>
+        <MODULEPATH id="juce_video" path="../../../Downloads/juce-code-b45a05d4f633c546424ca854f6d2e0daf21daa74/modules"/>
+        <MODULEPATH id="juce_cryptography" path="../../../Downloads/juce-code-b45a05d4f633c546424ca854f6d2e0daf21daa74/modules"/>
+      </MODULEPATHS>
+    </XCODE_MAC>
+  </EXPORTFORMATS>
+  <MODULES>
+    <MODULES id="juce_audio_basics" showAllCode="1" useLocalCopy="1"/>
+    <MODULES id="juce_audio_devices" showAllCode="1" useLocalCopy="1"/>
+    <MODULES id="juce_audio_formats" showAllCode="1" useLocalCopy="1"/>
+    <MODULES id="juce_audio_processors" showAllCode="1" useLocalCopy="1"/>
+    <MODULES id="juce_audio_utils" showAllCode="1" useLocalCopy="1"/>
+    <MODULES id="juce_core" showAllCode="1" useLocalCopy="1"/>
+    <MODULES id="juce_cryptography" showAllCode="1" useLocalCopy="1"/>
+    <MODULES id="juce_data_structures" showAllCode="1" useLocalCopy="1"/>
+    <MODULES id="juce_events" showAllCode="1" useLocalCopy="1"/>
+    <MODULES id="juce_graphics" showAllCode="1" useLocalCopy="1"/>
+    <MODULES id="juce_gui_basics" showAllCode="1" useLocalCopy="1"/>
+    <MODULES id="juce_gui_extra" showAllCode="1" useLocalCopy="1"/>
+    <MODULES id="juce_opengl" showAllCode="1" useLocalCopy="1"/>
+    <MODULES id="juce_video" showAllCode="1" useLocalCopy="1"/>
+  </MODULES>
+  <JUCEOPTIONS/>
+</JUCERPROJECT>

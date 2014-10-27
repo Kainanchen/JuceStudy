@@ -10,8 +10,8 @@
 
 */
 
-#ifndef __APPHEADERFILE_AZOW1J__
-#define __APPHEADERFILE_AZOW1J__
+#ifndef __APPHEADERFILE_I9WA4C__
+#define __APPHEADERFILE_I9WA4C__
 
 #include "AppConfig.h"
 #include "modules/juce_audio_basics/juce_audio_basics.h"
@@ -42,4 +42,4 @@ namespace ProjectInfo
     const int          versionNumber  = 0x10000;
 }
 
-#endif   // __APPHEADERFILE_AZOW1J__
+#endif   // __APPHEADERFILE_I9WA4C__

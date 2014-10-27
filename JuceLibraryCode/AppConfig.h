@@ -11,8 +11,8 @@
 
 */
 
-#ifndef __JUCE_APPCONFIG_AZOW1J__
-#define __JUCE_APPCONFIG_AZOW1J__
+#ifndef __JUCE_APPCONFIG_I9WA4C__
+#define __JUCE_APPCONFIG_I9WA4C__
 
 //==============================================================================
 // [BEGIN_USER_CODE_SECTION]
@@ -194,4 +194,4 @@
 #endif
 
 
-#endif  // __JUCE_APPCONFIG_AZOW1J__
+#endif  // __JUCE_APPCONFIG_I9WA4C__

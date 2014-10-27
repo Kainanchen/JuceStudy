@@ -9,11 +9,7 @@
 #ifndef __Lipsdrum__MainComponent__
 #define __Lipsdrum__MainComponent__
 
-#include <iostream>
 #include "../JuceLibraryCode/JuceHeader.h"
-
-
-
 
 class MainContentComponent : public Component
 {

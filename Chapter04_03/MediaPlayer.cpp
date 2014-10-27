@@ -80,7 +80,6 @@ MediaPlayer::~MediaPlayer()
     stopButton = nullptr;
     settingsButton = nullptr;
 
-
     //[Destructor]. You can add your own custom destruction code here..
     //[/Destructor]
 }
@@ -118,6 +117,8 @@ void MediaPlayer::buttonClicked (Button* buttonThatWasClicked)
 		FileChooser chooser("Select a Wave file to play...", File::nonexistent,"*.wav");
 		if (chooser.browseForFileToOpen()) {
 			File file(chooser.getResult());
+			changeState(Stopped);
+			transportSource.setSource(nullptr);
 			readerSource = new AudioFormatReaderSource(formatManager.createReaderFor(file),true);
 			transportSource.setSource(readerSource);
 			playButton -> setEnabled(true);
