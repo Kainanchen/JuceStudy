@@ -12,7 +12,7 @@
 //==============================================================================
 MainContentComponent::MainContentComponent():readFileButton("Read Image File..."),writeFileButton("Write Image File...")
 {
-    brightnessSlider.setRange(0.0, 10.0);
+    brightnessSlider.setRange(-10.0, 10.0);
     addAndMakeVisible(&readFileButton);
     addAndMakeVisible(&imageComponent);
     addAndMakeVisible(&brightnessSlider);
@@ -70,19 +70,24 @@ void MainContentComponent::sliderValueChanged(Slider *slider){
             log->writeToLog(String(amount));
             if (amount==0.f) {
                 procImage=origImage.createCopy();
-            }else{
+                imageComponent.setImage(procImage);
+            }else
+            {
+                if (amount>0.f){
+                 
                 for (int v=0; v<origImage.getHeight(); ++v) {
                     for (int h=0; h<origImage.getWidth(); ++h) {
                         Colour col = origImage.getPixelAt(h, v);
-                        if (amount>0.f)
-                            procImage.setPixelAt(h, v, col.brighter(amount));
-                            else if(amount<0.f)
-                                procImage.setPixelAt(h,v,col.darker(-amount));
-                        
-                    }
+                        procImage.setPixelAt(h, v, col.brighter(amount));}}
                 }
+                    else if(amount<0.f){
+                        for (int v=0; v<origImage.getHeight(); ++v) {
+                            for (int h=0; h<origImage.getWidth(); ++h) {
+                                Colour col = origImage.getPixelAt(h, v);
+                        procImage.setPixelAt(h,v,col.darker(-amount));}}}
             }
         imageComponent.repaint();
         }
     }
-}
+    }
+

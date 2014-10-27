@@ -29,21 +29,30 @@
 //==============================================================================
 MediaPlayer::MediaPlayer ()
 {
-    addAndMakeVisible (textButton = new TextButton ("Play"));
-    textButton->addListener (this);
-    textButton->setColour (TextButton::buttonColourId, Colours::chartreuse);
+    playButton->setEnabled(false);
+    stopButton->setEnabled(false);
+    formatManager.registerBasicFormats();
+    sourcePlayer.setSource(&transportSource);
+    deviceManager.addAudioCallback(&sourcePlayer);
+    deviceManager.initialise(0, 2, nullptr, true);
+    deviceManager.addChangeListener(this);
+    transportSource.addChangeListener(this);
+    state=Stopped;
+    addAndMakeVisible (playButton = new TextButton ("Play"));
+    playButton->addListener (this);
+    playButton->setColour (TextButton::buttonColourId, Colours::chartreuse);
 
-    addAndMakeVisible (textButton2 = new TextButton ("Stop"));
-    textButton2->addListener (this);
-    textButton2->setColour (TextButton::buttonColourId, Colours::red);
+    addAndMakeVisible (stopButton = new TextButton ("Stop"));
+    stopButton->addListener (this);
+    stopButton->setColour (TextButton::buttonColourId, Colours::red);
 
-    addAndMakeVisible (textButton3 = new TextButton ("Open Files"));
-    textButton3->setButtonText (TRANS("Open..."));
-    textButton3->addListener (this);
+    addAndMakeVisible (openButton = new TextButton ("Open Files"));
+    openButton->setButtonText (TRANS("Open..."));
+    openButton->addListener (this);
 
-    addAndMakeVisible (textButton4 = new TextButton ("Configure audio"));
-    textButton4->setButtonText (TRANS("Audio Settings..."));
-    textButton4->addListener (this);
+    addAndMakeVisible (settingsButton = new TextButton ("Configure audio"));
+    settingsButton->setButtonText (TRANS("Audio Settings..."));
+    settingsButton->addListener (this);
 
 
     //[UserPreSize]
@@ -61,10 +70,10 @@ MediaPlayer::~MediaPlayer()
     //[Destructor_pre]. You can add your own custom destruction code here..
     //[/Destructor_pre]
 
-    textButton = nullptr;
-    textButton2 = nullptr;
-    textButton3 = nullptr;
-    textButton4 = nullptr;
+    playButton = nullptr;
+    stopButton = nullptr;
+    openButton = nullptr;
+    settingsButton = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -85,10 +94,10 @@ void MediaPlayer::paint (Graphics& g)
 
 void MediaPlayer::resized()
 {
-    textButton->setBounds (-40, 32, getWidth() - -74, 24);
-    textButton2->setBounds (-40, 64, getWidth() - -74, 24);
-    textButton3->setBounds (-40, 0, getWidth() - -74, 24);
-    textButton4->setBounds (-40, 96, getWidth() - -74, 24);
+    playButton->setBounds (-40, 32, getWidth() - -74, 24);
+    stopButton->setBounds (-40, 64, getWidth() - -74, 24);
+    openButton->setBounds (-40, 0, getWidth() - -74, 24);
+    settingsButton->setBounds (-40, 96, getWidth() - -74, 24);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -98,24 +107,49 @@ void MediaPlayer::buttonClicked (Button* buttonThatWasClicked)
     //[UserbuttonClicked_Pre]
     //[/UserbuttonClicked_Pre]
 
-    if (buttonThatWasClicked == textButton)
+    if (buttonThatWasClicked == playButton)
     {
         //[UserButtonCode_textButton] -- add your button handler code here..
+        if ((Stopped==state)||(Paused==state))
+            changeState(Starting);
+            else if(Playing==state)
+                changeState(Pausing);
+        
         //[/UserButtonCode_textButton]
     }
-    else if (buttonThatWasClicked == textButton2)
+    else if (buttonThatWasClicked == stopButton)
     {
         //[UserButtonCode_textButton2] -- add your button handler code here..
+        if (Paused==state) {
+            changeState(Stopped);
+        }else
+            changeState(Stopping);
+        
         //[/UserButtonCode_textButton2]
     }
-    else if (buttonThatWasClicked == textButton3)
+    else if (buttonThatWasClicked == openButton)
     {
         //[UserButtonCode_textButton3] -- add your button handler code here..
+        FileChooser chooser ("Select a Wave file to play...",File::nonexistent,"*.wav");
+        if (chooser.browseForFileToOpen()) {
+            File file (chooser.getResult());
+            readerSource=new AudioFormatReaderSource(
+                                                     formatManager.createReaderFor(file),true);
+            transportSource.setSource(readerSource);
+            playButton->setEnabled(true);
+        }
         //[/UserButtonCode_textButton3]
     }
-    else if (buttonThatWasClicked == textButton4)
+    else if (buttonThatWasClicked == settingsButton)
     {
         //[UserButtonCode_textButton4] -- add your button handler code here..
+        bool showMidiInputOptions=false;
+        bool showMidiOutputSelector=false;
+        bool showChannelsAsStereoPairs=true;
+        bool hideAdvancedOptions=false;
+        AudioDeviceSelectorComponent settings (deviceManager,0,0,1,2,showMidiInputOptions,showMidiOutputSelector,showChannelsAsStereoPairs,hideAdvancedOptions);
+        settings.setSize(500, 400);
+        DialogWindow::showModalDialog(String("Audio Settings"), &settings, TopLevelWindow::getTopLevelWindow(0), Colours::white, true);
         //[/UserButtonCode_textButton4]
     }
 
@@ -126,6 +160,58 @@ void MediaPlayer::buttonClicked (Button* buttonThatWasClicked)
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
+void MediaPlayer::changeListenerCallback(ChangeBroadcaster* src){
+    if (&deviceManager==src) {
+        AudioDeviceManager::AudioDeviceSetup setup;
+        deviceManager.getAudioDeviceSetup(setup);
+        if (setup.outputChannels.isZero()) {
+            sourcePlayer.setSource(nullptr);
+        }else
+            sourcePlayer.setSource(&transportSource);
+    }else if (&transportSource==src){
+        if (transportSource.isPlaying()) {
+            changeState(Playing);
+        }else{
+            if ((Stopping==state)||(Playing==state))
+                changeState(Stopped);
+                else if (Pausing==state)
+                    changeState(Paused);
+            
+        }
+    }
+}
+void MediaPlayer::changeState(TransportState newState){
+    if (state != newState) {
+        state=newState;
+        switch (state) {
+            case Stopped:
+                playButton->setButtonText("Play");
+                stopButton->setButtonText("Stop");
+                stopButton->setEnabled(false);
+                transportSource.setPosition(0.0);
+                break;
+                case Starting:
+                transportSource.start();
+                break;
+                case Playing:
+                playButton->setButtonText("Paused");
+                stopButton->setButtonText("Stop");
+                stopButton->setEnabled(true);
+                break;
+                case Paused:
+                playButton->setButtonText("Resume");
+                stopButton->setButtonText("Return to zero");
+                break;
+                case Stopping:
+                transportSource.stop();
+                break;
+            case Pausing:
+                transportSource.stop();
+                break;
+        
+        }
+    }
+}
 //[/MiscUserCode]
 
 
