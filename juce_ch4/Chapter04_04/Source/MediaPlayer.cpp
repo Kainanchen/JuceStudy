@@ -29,15 +29,6 @@
 //==============================================================================
 MediaPlayer::MediaPlayer ()
 {
-    playButton->setEnabled(false);
-    stopButton->setEnabled(false);
-    formatManager.registerBasicFormats();
-    sourcePlayer.setSource(&transportSource);
-    deviceManager.addAudioCallback(&sourcePlayer);
-    deviceManager.initialise(0, 2, nullptr, true);
-    deviceManager.addChangeListener(this);
-    transportSource.addChangeListener(this);
-    state=Stopped;
     addAndMakeVisible (playButton = new TextButton ("Play"));
     playButton->addListener (this);
     playButton->setColour (TextButton::buttonColourId, Colours::chartreuse);
@@ -50,9 +41,9 @@ MediaPlayer::MediaPlayer ()
     openButton->setButtonText (TRANS("Open..."));
     openButton->addListener (this);
 
-    addAndMakeVisible (settingsButton = new TextButton ("Configure audio"));
-    settingsButton->setButtonText (TRANS("Audio Settings..."));
-    settingsButton->addListener (this);
+    addAndMakeVisible (settingButton = new TextButton ("Configure audio"));
+    settingButton->setButtonText (TRANS("Audio Settings..."));
+    settingButton->addListener (this);
 
 
     //[UserPreSize]
@@ -73,7 +64,7 @@ MediaPlayer::~MediaPlayer()
     playButton = nullptr;
     stopButton = nullptr;
     openButton = nullptr;
-    settingsButton = nullptr;
+    settingButton = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -97,7 +88,7 @@ void MediaPlayer::resized()
     playButton->setBounds (-40, 32, getWidth() - -74, 24);
     stopButton->setBounds (-40, 64, getWidth() - -74, 24);
     openButton->setBounds (-40, 0, getWidth() - -74, 24);
-    settingsButton->setBounds (-40, 96, getWidth() - -74, 24);
+    settingButton->setBounds (-40, 96, getWidth() - -74, 24);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -109,48 +100,23 @@ void MediaPlayer::buttonClicked (Button* buttonThatWasClicked)
 
     if (buttonThatWasClicked == playButton)
     {
-        //[UserButtonCode_textButton] -- add your button handler code here..
-        if ((Stopped==state)||(Paused==state))
-            changeState(Starting);
-            else if(Playing==state)
-                changeState(Pausing);
-        
-        //[/UserButtonCode_textButton]
+        //[UserButtonCode_playButton] -- add your button handler code here..
+        //[/UserButtonCode_playButton]
     }
     else if (buttonThatWasClicked == stopButton)
     {
-        //[UserButtonCode_textButton2] -- add your button handler code here..
-        if (Paused==state) {
-            changeState(Stopped);
-        }else
-            changeState(Stopping);
-        
-        //[/UserButtonCode_textButton2]
+        //[UserButtonCode_stopButton] -- add your button handler code here..
+        //[/UserButtonCode_stopButton]
     }
     else if (buttonThatWasClicked == openButton)
     {
-        //[UserButtonCode_textButton3] -- add your button handler code here..
-        FileChooser chooser ("Select a Wave file to play...",File::nonexistent,"*.wav");
-        if (chooser.browseForFileToOpen()) {
-            File file (chooser.getResult());
-            readerSource=new AudioFormatReaderSource(
-                                                     formatManager.createReaderFor(file),true);
-            transportSource.setSource(readerSource);
-            playButton->setEnabled(true);
-        }
-        //[/UserButtonCode_textButton3]
+        //[UserButtonCode_openButton] -- add your button handler code here..
+        //[/UserButtonCode_openButton]
     }
-    else if (buttonThatWasClicked == settingsButton)
+    else if (buttonThatWasClicked == settingButton)
     {
-        //[UserButtonCode_textButton4] -- add your button handler code here..
-        bool showMidiInputOptions=false;
-        bool showMidiOutputSelector=false;
-        bool showChannelsAsStereoPairs=true;
-        bool hideAdvancedOptions=false;
-        AudioDeviceSelectorComponent settings (deviceManager,0,0,1,2,showMidiInputOptions,showMidiOutputSelector,showChannelsAsStereoPairs,hideAdvancedOptions);
-        settings.setSize(500, 400);
-        DialogWindow::showModalDialog(String("Audio Settings"), &settings, TopLevelWindow::getTopLevelWindow(0), Colours::white, true);
-        //[/UserButtonCode_textButton4]
+        //[UserButtonCode_settingButton] -- add your button handler code here..
+        //[/UserButtonCode_settingButton]
     }
 
     //[UserbuttonClicked_Post]
@@ -160,58 +126,6 @@ void MediaPlayer::buttonClicked (Button* buttonThatWasClicked)
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
-void MediaPlayer::changeListenerCallback(ChangeBroadcaster* src){
-    if (&deviceManager==src) {
-        AudioDeviceManager::AudioDeviceSetup setup;
-        deviceManager.getAudioDeviceSetup(setup);
-        if (setup.outputChannels.isZero()) {
-            sourcePlayer.setSource(nullptr);
-        }else
-            sourcePlayer.setSource(&transportSource);
-    }else if (&transportSource==src){
-        if (transportSource.isPlaying()) {
-            changeState(Playing);
-        }else{
-            if ((Stopping==state)||(Playing==state))
-                changeState(Stopped);
-                else if (Pausing==state)
-                    changeState(Paused);
-            
-        }
-    }
-}
-void MediaPlayer::changeState(TransportState newState){
-    if (state != newState) {
-        state=newState;
-        switch (state) {
-            case Stopped:
-                playButton->setButtonText("Play");
-                stopButton->setButtonText("Stop");
-                stopButton->setEnabled(false);
-                transportSource.setPosition(0.0);
-                break;
-                case Starting:
-                transportSource.start();
-                break;
-                case Playing:
-                playButton->setButtonText("Paused");
-                stopButton->setButtonText("Stop");
-                stopButton->setEnabled(true);
-                break;
-                case Paused:
-                playButton->setButtonText("Resume");
-                stopButton->setButtonText("Return to zero");
-                break;
-                case Stopping:
-                transportSource.stop();
-                break;
-            case Pausing:
-                transportSource.stop();
-                break;
-        
-        }
-    }
-}
 //[/MiscUserCode]
 
 
@@ -225,20 +139,20 @@ void MediaPlayer::changeState(TransportState newState){
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="MediaPlayer" componentName=""
-                 parentClasses="public Component" constructorParams="" variableInitialisers=""
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="0" initialWidth="600" initialHeight="400">
+                 parentClasses="public Component, public ChangeListener" constructorParams=""
+                 variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
+                 overlayOpacity="0.330" fixedSize="0" initialWidth="600" initialHeight="400">
   <BACKGROUND backgroundColour="ffffffff"/>
-  <TEXTBUTTON name="Play" id="29bf7dc4c9a485f0" memberName="textButton" virtualName=""
+  <TEXTBUTTON name="Play" id="29bf7dc4c9a485f0" memberName="playButton" virtualName=""
               explicitFocusOrder="0" pos="-40 32 -74M 24" bgColOff="ff7fff00"
               buttonText="Play" connectedEdges="0" needsCallback="1" radioGroupId="0"/>
-  <TEXTBUTTON name="Stop" id="813be0993bfb2f7b" memberName="textButton2" virtualName=""
+  <TEXTBUTTON name="Stop" id="813be0993bfb2f7b" memberName="stopButton" virtualName=""
               explicitFocusOrder="0" pos="-40 64 -74M 24" bgColOff="ffff0000"
               buttonText="Stop" connectedEdges="0" needsCallback="1" radioGroupId="0"/>
-  <TEXTBUTTON name="Open Files" id="1746fc4fd3a1573f" memberName="textButton3"
+  <TEXTBUTTON name="Open Files" id="1746fc4fd3a1573f" memberName="openButton"
               virtualName="" explicitFocusOrder="0" pos="-40 0 -74M 24" buttonText="Open..."
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
-  <TEXTBUTTON name="Configure audio" id="da5b9499212ed60d" memberName="textButton4"
+  <TEXTBUTTON name="Configure audio" id="da5b9499212ed60d" memberName="settingButton"
               virtualName="" explicitFocusOrder="0" pos="-40 96 -74M 24" buttonText="Audio Settings..."
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
 </JUCER_COMPONENT>

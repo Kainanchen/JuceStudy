@@ -36,7 +36,7 @@
 */
 class MediaPlayer  : public Component,
                      public ChangeListener,
-public ButtonListener
+                     public ButtonListener
 {
 public:
     //==============================================================================
@@ -45,7 +45,7 @@ public:
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
-    enum TransportState{
+    enum TransportState {
         Stopped,
         Starting,
         Playing,
@@ -53,7 +53,7 @@ public:
         Paused,
         Stopping
     };
-    void changeState (TransportState newState);
+    void changeState( TransportState newState);
     void changeListenerCallback (ChangeBroadcaster* source);
     //[/UserMethods]
 
@@ -67,7 +67,7 @@ private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     AudioDeviceManager deviceManager;
     AudioFormatManager formatManager;
-    ScopedPointer<AudioFormatReaderSource>readerSource;
+    ScopedPointer<AudioFormatReaderSource> readerSource;
     AudioTransportSource transportSource;
     AudioSourcePlayer sourcePlayer;
     TransportState state;
@@ -77,7 +77,7 @@ private:
     ScopedPointer<TextButton> playButton;
     ScopedPointer<TextButton> stopButton;
     ScopedPointer<TextButton> openButton;
-    ScopedPointer<TextButton> settingsButton;
+    ScopedPointer<TextButton> settingButton;
 
 
     //==============================================================================
