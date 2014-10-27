@@ -77,7 +77,7 @@ private:
     ScopedPointer<TextButton> playButton;
     ScopedPointer<TextButton> stopButton;
     ScopedPointer<TextButton> openButton;
-    ScopedPointer<TextButton> settingButton;
+    ScopedPointer<TextButton> settingsButton;
 
 
     //==============================================================================
