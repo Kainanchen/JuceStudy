@@ -114,7 +114,7 @@ void MediaPlayer::buttonClicked (Button* buttonThatWasClicked)
     if (buttonThatWasClicked == openButton)
     {
         //[UserButtonCode_openButton] -- add your button handler code here..
-		FileChooser chooser("Select a Wave file to play...", File::nonexistent,"*.wav");
+		FileChooser chooser("Select a Wave file to play...", File::nonexistent,"*.wav;*.mp3");
 		if (chooser.browseForFileToOpen()) {
 			File file(chooser.getResult());
 			changeState(Stopped);
