@@ -35,7 +35,9 @@
                                                                     //[/Comments]
 */
 class EntryForm  : public Component,
-                   public LabelListener
+                   public ValueTree::Listener,
+                   public LabelListener,
+                   public ButtonListener
 {
 public:
     //==============================================================================
@@ -44,17 +46,25 @@ public:
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
+    void valueTreePropertyChanged (ValueTree& tree, const Identifier& property);
+    void valueTreeChildAdded(ValueTree& parentTree, ValueTree& child){}
+    void valueTreeChildRemoved(ValueTree& parentTree, ValueTree& child) {}
+    void valueTreeChildOrderChanged(ValueTree& tree) {}
+    void valueTreeParentChanged (ValueTree& tree){}
+    void valueTreeRedirected (ValueTree& tree) {}
     //[/UserMethods]
 
     void paint (Graphics& g);
     void resized();
     void labelTextChanged (Label* labelThatHasChanged);
+    void buttonClicked (Button* buttonThatWasClicked);
 
 
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     ValueTree personData;
+    UndoManager undoManager;
     static const Identifier personId;
     static const Identifier firstNameId;
     static const Identifier lastNameId;
@@ -63,7 +73,7 @@ private:
     static const Identifier line1Id;
     static const Identifier line2Id;
     static const Identifier line3Id;
-    
+
     //[/UserVariables]
 
     //==============================================================================
@@ -80,6 +90,9 @@ private:
     ScopedPointer<Label> line2Field;
     ScopedPointer<Label> line3Field;
     ScopedPointer<GroupComponent> groupComponent;
+    ScopedPointer<TextButton> undoButton;
+    ScopedPointer<TextButton> openButton;
+    ScopedPointer<TextButton> saveButton;
 
 
     //==============================================================================

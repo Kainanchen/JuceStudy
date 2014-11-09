@@ -140,6 +140,18 @@ EntryForm::EntryForm ()
     addAndMakeVisible (groupComponent = new GroupComponent ("new group",
                                                             TRANS("Address")));
 
+    addAndMakeVisible (undoButton = new TextButton ("undoButton"));
+    undoButton->setButtonText (TRANS("Undo"));
+    undoButton->addListener (this);
+
+    addAndMakeVisible (openButton = new TextButton ("openButton"));
+    openButton->setButtonText (TRANS("Open..."));
+    openButton->addListener (this);
+
+    addAndMakeVisible (saveButton = new TextButton ("saveButton"));
+    saveButton->setButtonText (TRANS("Save..."));
+    saveButton->addListener (this);
+
 
     //[UserPreSize]
     //[/UserPreSize]
@@ -157,6 +169,7 @@ EntryForm::EntryForm ()
     addressData.setProperty(line2Id, String::empty, nullptr);
     addressData.setProperty(line3Id, String::empty, nullptr);
     personData.addChild(addressData, -1, nullptr);
+    personData.addListener(this);
     //[/Constructor]
 }
 
@@ -178,6 +191,9 @@ EntryForm::~EntryForm()
     line2Field = nullptr;
     line3Field = nullptr;
     groupComponent = nullptr;
+    undoButton = nullptr;
+    openButton = nullptr;
+    saveButton = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -211,6 +227,9 @@ void EntryForm::resized()
     line2Field->setBounds (168, 104, 150, 22);
     line3Field->setBounds (168, 128, 150, 22);
     groupComponent->setBounds (0, 65, 328, 104);
+    undoButton->setBounds (344, 72, 150, 24);
+    openButton->setBounds (344, 104, 150, 24);
+    saveButton->setBounds (344, 136, 150, 24);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -218,51 +237,109 @@ void EntryForm::resized()
 void EntryForm::labelTextChanged (Label* labelThatHasChanged)
 {
     //[UserlabelTextChanged_Pre]
+    undoManager.beginNewTransaction();
     //[/UserlabelTextChanged_Pre]
 
     if (labelThatHasChanged == firstNameField)
     {
         //[UserLabelCode_firstNameField] -- add your label text handling code here..
-        personData.setProperty(firstNameId, labelThatHasChanged->getText(), nullptr);
+        personData.setProperty(firstNameId, labelThatHasChanged->getText(), &undoManager);
         //[/UserLabelCode_firstNameField]
     }
     else if (labelThatHasChanged == lastNameField)
     {
         //[UserLabelCode_lastNameField] -- add your label text handling code here..
-        personData.setProperty(lastNameId, labelThatHasChanged->getText(), nullptr);
+        personData.setProperty(lastNameId, labelThatHasChanged->getText(), &undoManager);
         //[/UserLabelCode_lastNameField]
     }
     else if (labelThatHasChanged == ageField)
     {
         //[UserLabelCode_ageField] -- add your label text handling code here..
-        personData.setProperty(ageId, labelThatHasChanged->getText(), nullptr);
+        personData.setProperty(ageId, labelThatHasChanged->getText(), &undoManager);
         //[/UserLabelCode_ageField]
     }
     else if (labelThatHasChanged == line1Field)
     {
         //[UserLabelCode_line1Field] -- add your label text handling code here..
         ValueTree addressData (personData.getChildWithName(addressId));
-        addressData.setProperty(line1Id, labelThatHasChanged->getText(), nullptr);
-    
+        addressData.setProperty(line1Id, labelThatHasChanged->getText(), &undoManager);
+
         //[/UserLabelCode_line1Field]
     }
     else if (labelThatHasChanged == line2Field)
     {
         //[UserLabelCode_line2Field] -- add your label text handling code here..
         ValueTree addressData (personData.getChildWithName(addressId));
-        addressData.setProperty(line2Id, labelThatHasChanged->getText(), nullptr);
+        addressData.setProperty(line2Id, labelThatHasChanged->getText(), &undoManager);
         //[/UserLabelCode_line2Field]
     }
     else if (labelThatHasChanged == line3Field)
     {
         //[UserLabelCode_line3Field] -- add your label text handling code here..
         ValueTree addressData (personData.getChildWithName(addressId));
-        addressData.setProperty(line3Id, labelThatHasChanged->getText(), nullptr);
+        addressData.setProperty(line3Id, labelThatHasChanged->getText(), &undoManager);
         //[/UserLabelCode_line3Field]
     }
 
     //[UserlabelTextChanged_Post]
     //[/UserlabelTextChanged_Post]
+}
+
+void EntryForm::buttonClicked (Button* buttonThatWasClicked)
+{
+    //[UserbuttonClicked_Pre]
+    //[/UserbuttonClicked_Pre]
+
+    if (buttonThatWasClicked == undoButton)
+    {
+        //[UserButtonCode_undoButton] -- add your button handler code here..
+        undoManager.undo();
+        //[/UserButtonCode_undoButton]
+    }
+    else if (buttonThatWasClicked == openButton)
+    {
+        //[UserButtonCode_openButton] -- add your button handler code here..
+        FileChooser chooser ("Open person data",File::nonexistent,"*.xml");
+        if (chooser.browseForFileToOpen()) {
+            Logger* log = Logger::getCurrentLogger();
+            File file (chooser.getResult());
+            XmlDocument xmlDoc(file);
+            ScopedPointer<XmlElement>xml =xmlDoc.getDocumentElement();
+            if (xml==nullptr) {
+                log->writeToLog("XML error");
+                return;
+            }
+            ValueTree newPerson (ValueTree::fromXml(*xml));
+            if (newPerson.getType()!=personId) {
+                log->writeToLog("Invalid person XML");
+                return;
+            }
+            undoManager.beginNewTransaction();
+            personData.copyPropertiesFrom(newPerson, &undoManager);
+            ValueTree newAddress (newPerson.getChildWithName(addressId));
+            ValueTree addressData (personData.getChildWithName(addressId));
+            addressData.copyPropertiesFrom(newAddress, &undoManager);
+        }
+        //[/UserButtonCode_openButton]
+    }
+    else if (buttonThatWasClicked == saveButton)
+    {
+        //[UserButtonCode_saveButton] -- add your button handler code here..
+        FileChooser chooser("Save person data",File::nonexistent,"*.xml");
+        if (chooser.browseForFileToSave(true)){
+            File file (chooser.getResult());
+            if (file.existsAsFile()) {
+                file.moveToTrash();
+                            }
+            FileOutputStream stream(file);
+            ScopedPointer<XmlElement>xml = personData.createXml();
+            xml->writeToStream(stream, String::empty);
+        }
+        //[/UserButtonCode_saveButton]
+    }
+
+    //[UserbuttonClicked_Post]
+    //[/UserbuttonClicked_Post]
 }
 
 
@@ -276,6 +353,23 @@ const Identifier EntryForm::addressId = "address";
 const Identifier EntryForm::line1Id = "line1";
 const Identifier EntryForm::line2Id = "line2";
 const Identifier EntryForm::line3Id = "line3";
+void EntryForm::valueTreePropertyChanged(ValueTree& tree, const Identifier& property)
+{
+    if (property==firstNameId) {
+        firstNameField->setText(tree.getProperty(property), dontSendNotification);
+
+    }else if (property==lastNameId){
+        lastNameField->setText(tree.getProperty(property), dontSendNotification);
+    }else if (property==ageId){
+        ageField->setText(tree.getProperty(property), dontSendNotification);
+    }else if (property==line1Id){
+        line1Field->setText(tree.getProperty(property), dontSendNotification);
+    }else if (property==line2Id){
+        line2Field->setText(tree.getProperty(property), dontSendNotification);
+    }else if (property==line3Id){
+        line3Field->setText(tree.getProperty(property), dontSendNotification);
+    }
+}
 //[/MiscUserCode]
 
 
@@ -289,9 +383,10 @@ const Identifier EntryForm::line3Id = "line3";
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="EntryForm" componentName=""
-                 parentClasses="public Component" constructorParams="" variableInitialisers=""
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="0" initialWidth="600" initialHeight="400">
+                 parentClasses="public Component, public ValueTree::Listener"
+                 constructorParams="" variableInitialisers="" snapPixels="8" snapActive="1"
+                 snapShown="1" overlayOpacity="0.330" fixedSize="0" initialWidth="600"
+                 initialHeight="400">
   <BACKGROUND backgroundColour="ff808080"/>
   <LABEL name="new label" id="714b16471a808e73" memberName="label" virtualName=""
          explicitFocusOrder="0" pos="0 0 150 24" edTextCol="ff000000"
@@ -355,6 +450,15 @@ BEGIN_JUCER_METADATA
          fontsize="15" bold="0" italic="0" justification="33"/>
   <GROUPCOMPONENT name="new group" id="be5bbea0a80b29e" memberName="groupComponent"
                   virtualName="" explicitFocusOrder="0" pos="0 65 328 104" title="Address"/>
+  <TEXTBUTTON name="undoButton" id="4ac7ac0d72385d92" memberName="undoButton"
+              virtualName="" explicitFocusOrder="0" pos="344 72 150 24" buttonText="Undo"
+              connectedEdges="0" needsCallback="1" radioGroupId="0"/>
+  <TEXTBUTTON name="openButton" id="201a3b5241226bc5" memberName="openButton"
+              virtualName="" explicitFocusOrder="0" pos="344 104 150 24" buttonText="Open..."
+              connectedEdges="0" needsCallback="1" radioGroupId="0"/>
+  <TEXTBUTTON name="saveButton" id="f4c1eff4b6ce477b" memberName="saveButton"
+              virtualName="" explicitFocusOrder="0" pos="344 136 150 24" buttonText="Save..."
+              connectedEdges="0" needsCallback="1" radioGroupId="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
