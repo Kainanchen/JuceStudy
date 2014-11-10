@@ -36,10 +36,8 @@ private:
 	
 	Label label;
 	Slider slider;
-	//MenuBarComponent menuBar;
 	ApplicationProperties appProperties;
-	ScopedPointer<MenuBarModel> menuModel;
-	
+	//ScopedPointer<MenuBarModel> menuModel;
 };
 
 

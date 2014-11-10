@@ -9,10 +9,8 @@
 #include "MainComponent.h"
 
 MainContentComponent::MainContentComponent()
-//: menuBar(this)
 {
-	 MenuBarModel::setMacMainMenu (menuModel, nullptr, "Open Recent");
-	 //addAndMakeVisible(&menuBar);
+	 MenuBarModel::setMacMainMenu (this);
 	 
 	 label.setEditable(true);
 	 addAndMakeVisible(&label);
@@ -38,6 +36,7 @@ MainContentComponent::~MainContentComponent()
 	 PropertiesFile* props = appProperties.getUserSettings();
 	 props->setValue("label", label.getText());
 	 props->setValue("slider", slider.getValue());
+	 setMacMainMenu(0);
 }
 
 StringArray MainContentComponent::getMenuBarNames()
